@@ -1,6 +1,7 @@
 import "expect-even-more-jest";
 import { Databases, TempDb } from "../src";
 import Knex from "knex";
+import { SqliteConnectionConfig } from "../src/connection-info";
 
 describe(`node-tempdb: sqlite support`, () => {
     it(`should provide a temp sqlite database on request`, async () => {
@@ -17,6 +18,18 @@ describe(`node-tempdb: sqlite support`, () => {
             .toBeEmptyArray();
     });
 
+    it(`should stop`, async () => {
+        // Arrange
+        const instance = create(Databases.sqlite);
+        // Act
+        const connectionInfo = await instance.start();
+        await instance.stop();
+        // Assert
+        const connection = connectionInfo.config as SqliteConnectionConfig;
+        expect(connection.filename)
+            .not.toBeFile();
+    });
+
     const instances: TempDb[] = [];
 
     function create(type?: Databases) {
@@ -28,7 +41,9 @@ describe(`node-tempdb: sqlite support`, () => {
     afterEach(async () => {
         const toStop = instances.splice(0, instances.length);
         for (let instance of toStop) {
-            await instance.stop();
+            if (instance.isRunning) {
+                await instance.stop();
+            }
         }
     });
 });

@@ -32,6 +32,10 @@ export class TempDb {
             : this._connectionInfo.clone();
     }
 
+    public get isRunning(): boolean {
+        return !!this._process;
+    }
+
     private _connectionInfo: ConnectionInfo | undefined;
     private _process: ChildProcessWithoutNullStreams | undefined;
 
@@ -66,13 +70,14 @@ export class TempDb {
             });
             process.on("close", code => {
                 if (code && !resolved) {
-                    reject(`Unable to start up ${ runner }:\n${ stderr }`);
+                    reject(`Unable to start up ${ runner }:\n${ stderr.join("\n") }`);
                 }
                 if (code && this._stopReject) {
                     this._stopReject(code);
                 } else if (this._stopResolve) {
                     this._stopResolve();
                 }
+                this._process = undefined;
                 this._stopResolve = undefined;
                 this._stopReject = undefined;
             });
@@ -88,7 +93,7 @@ export class TempDb {
                 return reject(`Not running`);
             }
             if (this._stopResolve) {
-                throw new Error(`Busy trying to stop...`);
+                return reject(`Busy trying to stop...`);
             }
             this._stopResolve = resolve;
             this._stopReject = reject;
