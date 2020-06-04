@@ -1,0 +1,49 @@
+{
+  "name": "node-tempdb",
+  "version": "1.0.0",
+  "description": "Piggy-backs off of PeanutButter.TempDb.Runner to provide a way for node tests to run against a temporary database",
+  "files": [
+    "dist/**/*",
+    "PeanutButter.TempDb.Runner.1.2.361/**/*"
+  ],
+  "scripts": {
+    "test": "jest",
+    "lint": "tslint --project .",
+    "autolint": "nodemon -e ts -x \"run-s lint\"",
+    "build": "tsc",
+    "update-files": "zarro update-package-files"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/fluffynuts/node-tempdb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fluffynuts/node-tempdb/issues"
+  },
+  "homepage": "https://github.com/fluffynuts/node-tempdb#readme",
+  "devDependencies": {
+    "@types/bent": "^7.0.2",
+    "@types/faker": "^4.1.12",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^13.13.4",
+    "@types/which": "^1.3.2",
+    "expect-even-more-jest": "^1.3.0",
+    "faker": "^4.1.0",
+    "jest": "^25.5.4",
+    "knex": "^0.21.1",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.4",
+    "npm-run-all": "^4.1.5",
+    "sqlite3": "^4.2.0",
+    "ts-jest": "^25.5.1",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.3",
+    "zarro": "^1.50.0"
+  },
+  "dependencies": {
+    "which": "^2.0.2"
+  }
+}
