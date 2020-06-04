@@ -2,7 +2,7 @@ import "expect-even-more-jest";
 import { Databases, TempDb } from "../src";
 import Knex from "knex";
 
-describe(`node-tempdb`, () => {
+describe(`node-tempdb: mysql support`, () => {
     it(`should provide a temp mysql database when available`, async () => {
         jest.setTimeout(30000);
         // Arrange
@@ -15,20 +15,6 @@ describe(`node-tempdb`, () => {
             .from("INFORMATION_SCHEMA.TABLES");
         expect(result)
             .not.toBeEmptyArray();
-    });
-
-    it(`should provide a temp sqlite database on request`, async () => {
-        // Arrange
-        const instance = create(Databases.sqlite);
-        // Act
-        const connectionInfo = await instance.start();
-        // Assert
-        const conn = Knex(connectionInfo.knexConfig);
-        const result = await conn.select("name")
-            .from("sqlite_master")
-            .where("type", "=", "table");
-        expect(result)
-            .toBeEmptyArray();
     });
 
     const instances: TempDb[] = [];
