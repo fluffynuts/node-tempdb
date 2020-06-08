@@ -1,4 +1,6 @@
-import { Databases, TempDb } from "./index";
+import { Databases } from "./tempdb";
+
+export type DbConfig = DbConnectionConfig | SqliteConnectionConfig;
 
 export interface Dictionary<T> {
     [key: string]: T;
@@ -8,7 +10,7 @@ export interface SqliteConnectionConfig {
     filename: string;
 }
 
-export interface MySqlConnectionConfig {
+export interface DbConnectionConfig {
     host: string;
     user: string;
     password: string;
@@ -18,7 +20,7 @@ export interface MySqlConnectionConfig {
 
 export interface KnexConfig {
     client: string;
-    connection: SqliteConnectionConfig | MySqlConnectionConfig;
+    connection: SqliteConnectionConfig | DbConnectionConfig;
     useNullAsDefault: boolean;
 }
 
@@ -37,7 +39,7 @@ export class ConnectionInfo {
         }
     }
 
-    public get config(): MySqlConnectionConfig | SqliteConnectionConfig {
+    public get config(): DbConnectionConfig | SqliteConnectionConfig {
         return this.makeConnectionInfo();
     }
 
@@ -71,7 +73,7 @@ export class ConnectionInfo {
     private _database = "";
     private _port = 0;
 
-    private makeConnectionInfo(): SqliteConnectionConfig | MySqlConnectionConfig {
+    private makeConnectionInfo(): SqliteConnectionConfig | DbConnectionConfig {
         if (this._type === Databases.sqlite) {
             return {
                 filename: this.sanitizePath(this._database)

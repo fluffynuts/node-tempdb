@@ -1,5 +1,5 @@
 import "expect-even-more-jest";
-import { Databases, TempDb } from "../src";
+import { Databases, TempDb } from "../src/tempdb";
 import Knex from "knex";
 import { SqliteConnectionConfig } from "../src/connection-info";
 
@@ -33,7 +33,7 @@ describe(`node-tempdb: sqlite support`, () => {
     it(`should have a static create method which starts up the database`, async () => {
         // Arrange
         const instance = await TempDb.create(Databases.sqlite);
-        const config = instance.connectionInfo?.knexConfig;
+        const config = instance.knexConfig;
         if (!config) {
             throw new Error("Started TempDb instance should have config");
         }

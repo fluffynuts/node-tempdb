@@ -1,5 +1,5 @@
 import "expect-even-more-jest";
-import { Databases, TempDb } from "../src";
+import { Databases, TempDb } from "../src/tempdb";
 import Knex from "knex";
 
 describe(`node-tempdb: mysql support`, () => {

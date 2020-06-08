@@ -2,7 +2,7 @@ import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import path from "path";
 import { fs } from "./fs";
 import { which } from "./which";
-import { ConnectionInfo } from "./connection-info";
+import { ConnectionInfo, DbConfig, KnexConfig } from "./connection-info";
 
 const myPackage = "node-tempdb";
 const pbPackage = "PeanutButter.TempDb.Runner";
@@ -32,7 +32,19 @@ export class TempDb {
         this._type = type ?? Databases.mysql;
     }
 
-    public get connectionInfo(): ConnectionInfo | undefined {
+    public get config(): DbConfig | undefined {
+        return this._connectionInfo
+            ? this._connectionInfo.clone().config
+            : undefined;
+    }
+
+    public get knexConfig(): KnexConfig | undefined {
+        return this._connectionInfo
+            ? this._connectionInfo.clone().knexConfig
+            : undefined;
+    }
+
+    private get connectionInfo(): ConnectionInfo | undefined {
         return !this._connectionInfo
             ? undefined
             : this._connectionInfo.clone();
@@ -236,6 +248,4 @@ export class TempDb {
         while (last !== current);
         throw new Error(`Can't find package base dir for "${ myPackage }"`);
     }
-
 }
-
