@@ -1,4 +1,4 @@
-name: Tests (linux)
+name: Tests (windows)
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  test-win32:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
