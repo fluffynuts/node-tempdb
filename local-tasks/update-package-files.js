@@ -22,7 +22,8 @@ gulp.task("update-package-files", async () => {
     pkg = JSON.parse(pkgContents),
     distMask = recursiveMask("dist"),
     pbMask = recursiveMask(pbPackageFolders[0]);
-  pkg.files = pkg.files || [];
+  pkg.files = (pkg.files || [])
+    .filter(f => !f.startsWith("PeanutButter"));
   addIfMissing(pkg.files, distMask);
   addIfMissing(pkg.files, pbMask);
 
