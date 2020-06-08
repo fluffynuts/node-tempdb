@@ -1,4 +1,4 @@
-import { Databases } from "./index";
+import { Databases, TempDb } from "./index";
 
 export interface Dictionary<T> {
     [key: string]: T;

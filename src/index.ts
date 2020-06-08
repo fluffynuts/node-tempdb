@@ -16,6 +16,12 @@ export enum Databases {
 type Action = ((...args: any[]) => void);
 
 export class TempDb {
+    public static async create(type?: Databases): Promise<TempDb> {
+        const result = new TempDb(type);
+        await result.start();
+        return result;
+    }
+
     public get type(): Databases {
         return this._type;
     }
@@ -162,7 +168,7 @@ export class TempDb {
                 p => p.toLowerCase().startsWith(searchPackageFolder)
             );
         if (tempDbPackageFolder) {
-            return path.resolve(tempDbPackageFolder);
+            return path.join(packageFolder, tempDbPackageFolder);
         }
         throw new Error(`Could not find ${ pbPackage } package folder under "${ packageFolder }"`);
     }

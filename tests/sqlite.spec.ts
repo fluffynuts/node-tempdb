@@ -30,6 +30,23 @@ describe(`node-tempdb: sqlite support`, () => {
             .not.toBeFile();
     });
 
+    it(`should have a static create method which starts up the database`, async () => {
+        // Arrange
+        const instance = await TempDb.create(Databases.sqlite);
+        const config = instance.connectionInfo?.knexConfig;
+        if (!config) {
+            throw new Error("Started TempDb instance should have config");
+        }
+        // Act
+        // Assert
+        const conn = Knex(config);
+        const result = await conn.select("name")
+            .from("sqlite_master")
+            .where("type", "=", "table");
+        expect(result)
+            .toBeEmptyArray();
+    });
+
     const instances: TempDb[] = [];
 
     function create(type?: Databases) {
