@@ -42,12 +42,12 @@ gulp.task("upgrade-tempdb-runner", async () => {
 async function run(label, action) {
     try {
         process.stdout.write(`${ chalk.yellow("[ -- ]") } ${ label }`);
-        process.stdout.flush();
         const result = await action();
         console.log((`\r${ chalk.green("[ OK ]") } ${ label }`));
         return result;
     } catch (e) {
         console.log((`\r${ chalk.red("[FAIL]") } ${ label }`));
+        throw e;
     }
 }
 
