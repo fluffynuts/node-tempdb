@@ -4,7 +4,7 @@ import Knex from "knex";
 
 describe(`node-tempdb: mysql support`, () => {
     it(`should provide a temp mysql database when available`, async () => {
-        jest.setTimeout(30000);
+        jest.setTimeout(60000);
         // Arrange
         const instance = create();
         // Act
