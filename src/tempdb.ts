@@ -218,6 +218,12 @@ export class TempDb {
             throw new Error(`Can't find launcher stub ${ scriptname } in ${ folder }`);
         }
         const result = path.join(folder, shellscript);
+        // ensure it's a unix file!
+        const scriptContents = await fs.readTextFile(result);
+        const unixified = scriptContents.split(/[\r|\n]/)
+            .filter(l => l.trim() !== "")
+            .join("\n");
+        await fs.writeFile(result, unixified);
         // ensure it's executable!
         await fs.chmod(result, "755");
         return result;
