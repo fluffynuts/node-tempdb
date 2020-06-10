@@ -8,6 +8,7 @@
     "PeanutButter.TempDb.Runner.1.2.372/**/*"
   ],
   "scripts": {
+    "pretest": "run-s \"zarro download-tempdb-if-necessary\"",
     "test": "jest",
     "lint": "tslint --project .",
     "autolint": "nodemon -e ts -x \"run-s lint\"",
@@ -21,8 +22,6 @@
     "prerelease": "run-s build test",
     "release": "cross-env VERSION_INCREMENT_STRATEGY=minor run-s \"zarro release-npm\"",
     "zarro": "cross-env BUILD_TOOLS_FOLDER=.tools zarro",
-    "remove-runner": "rimraf PeantuButter.TempDb.Runner*",
-    "download-runner": "node-nuget download PeanutButter.TempDb.Runner.1.2.372",
     "upgrade-tempdb-runner": "run-s \"zarro upgrade-tempdb-runner\""
   },
   "repository": {
@@ -50,7 +49,7 @@
     "knex": "^0.21.1",
     "leaked-handles": "^5.2.0",
     "mysql": "^2.18.1",
-    "node-nuget-client": "^0.5.0",
+    "node-nuget-client": "^0.6.0",
     "nodemon": "^2.0.4",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
@@ -58,7 +57,7 @@
     "ts-jest": "^25.5.1",
     "tslint": "^6.1.2",
     "typescript": "^3.9.3",
-    "zarro": "^1.53.0"
+    "zarro": "^1.54.0"
   },
   "dependencies": {
     "which": "^2.0.2"

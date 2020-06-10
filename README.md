@@ -79,3 +79,13 @@ Generally, this means:
   folder to your PATH (as soon as I have an OSX machine to test on I'm sure I can automate
   this). `brew info mysql` should tell you where it's installed to. In the wild, I've seen
   the path `/usr/local/mysql/bin` as the home where `mysqld` might live on OSX.
+  
+## Dev
+
+If you want to work against this code, you should be able to:
+- clone
+- `npm test`
+
+and
+1. the tests should all run
+2. you should have a local copy of the used version of PeanutButter.TempDb.Runner
