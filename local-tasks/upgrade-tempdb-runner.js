@@ -31,7 +31,7 @@ gulp.task("upgrade-tempdb-runner", async () => {
     await run(`Update postinstall script`,
         async () => {
             const index = await readPackageJson();
-            index.scripts.postinstall = `node-nuget download ${ dlResult.fullName }`;
+            index.scripts["download-runner"] = `node-nuget download ${ dlResult.fullName }`;
             await writeTextFile(
                 "package.json",
                 JSON.stringify(index, null, 2)

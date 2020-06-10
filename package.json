@@ -5,7 +5,7 @@
   "main": "dist/tempdb.js",
   "files": [
     "dist/**/*",
-    "PeanutButter.TempDb.Runner.1.2.369/**/*"
+    "PeanutButter.TempDb.Runner.1.2.370/**/*"
   ],
   "scripts": {
     "test": "jest",
@@ -21,7 +21,10 @@
     "prerelease": "run-s build test",
     "release": "cross-env VERSION_INCREMENT_STRATEGY=minor run-s \"zarro release-npm\"",
     "zarro": "cross-env BUILD_TOOLS_FOLDER=.tools zarro",
-    "postinstall": "node-nuget download PeanutButter.TempDb.Runner.1.2.369"
+    "postinstall": "run-s remove-runner download-runner",
+    "remove-runner": "rimraf PeantuButter.TempDb.Runner*",
+    "download-runner": "node-nuget download PeanutButter.TempDb.Runner.1.2.370",
+    "upgrade-tempdb-runner": "run-s \"zarro upgrade-tempdb-runner\""
   },
   "repository": {
     "type": "git",
