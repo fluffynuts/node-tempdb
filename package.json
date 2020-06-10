@@ -1,6 +1,6 @@
 {
   "name": "node-tempdb",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Piggy-backs off of PeanutButter.TempDb.Runner to provide a way for node tests to run against a temporary database",
   "main": "dist/tempdb.js",
   "files": [
@@ -21,7 +21,6 @@
     "prerelease": "run-s build test",
     "release": "cross-env VERSION_INCREMENT_STRATEGY=minor run-s \"zarro release-npm\"",
     "zarro": "cross-env BUILD_TOOLS_FOLDER=.tools zarro",
-    "postinstall": "run-s remove-runner download-runner",
     "remove-runner": "rimraf PeantuButter.TempDb.Runner*",
     "download-runner": "node-nuget download PeanutButter.TempDb.Runner.1.2.372",
     "upgrade-tempdb-runner": "run-s \"zarro upgrade-tempdb-runner\""
