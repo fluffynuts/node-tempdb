@@ -49,6 +49,7 @@
     "faker": "^4.1.0",
     "jest": "^25.5.4",
     "knex": "^0.21.1",
+    "leaked-handles": "^5.2.0",
     "mysql": "^2.18.1",
     "node-nuget-client": "^0.5.0",
     "nodemon": "^2.0.4",

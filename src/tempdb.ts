@@ -95,6 +95,10 @@ export class TempDb {
                 } else if (this._stopResolve) {
                     this._stopResolve();
                 }
+                try {
+                    this._process?.kill();
+                } catch (e) {
+                }
                 this._process = undefined;
                 this._stopResolve = undefined;
                 this._stopReject = undefined;

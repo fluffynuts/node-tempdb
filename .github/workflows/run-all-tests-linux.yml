@@ -24,7 +24,5 @@ jobs:
         DOTNET_CLI_TELEMETRY_OPTOUT: 1
         SUPPRESS_DOWNLOAD_PROGRESS: 1
       run: |
-        echo "Install npm deps..."
         npm ci
-        echo "Start tests"
         npm test
