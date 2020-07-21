@@ -56,7 +56,7 @@
     "ts-jest": "^25.5.1",
     "tslint": "^6.1.2",
     "typescript": "^3.9.3",
-    "zarro": "^1.54.0"
+    "zarro": "^1.68.0"
   },
   "dependencies": {
     "which": "^2.0.2"
