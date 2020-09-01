@@ -68,6 +68,10 @@ describe(`node-tempdb: sqlite support`, () => {
         return result;
     }
 
+    beforeEach(() => {
+        jest.setTimeout(30000);
+    });
+
 
     afterEach(async () => {
         const toStop = instances.splice(0, instances.length);

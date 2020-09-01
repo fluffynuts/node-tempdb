@@ -35,8 +35,8 @@ export class TempDb {
     }
 
     private readonly _type: Databases;
-    private _inactivityTimeoutSeconds?: number;
-    private _absoluteLifespanSeconds?: number;
+    private readonly _inactivityTimeoutSeconds?: number;
+    private readonly _absoluteLifespanSeconds?: number;
 
     constructor(options?: TempDbOptions) {
         this._type = options?.type ?? Databases.mysql;
@@ -70,7 +70,7 @@ export class TempDb {
     private _process: ChildProcessWithoutNullStreams | undefined;
 
     private _generateTempDbRunnerArgs(): string[] {
-        const result = ["ie", this._type];
+        const result = ["-e", this._type];
         if (this._absoluteLifespanSeconds !== undefined) {
             result.push("-a");
             result.push(this._absoluteLifespanSeconds.toString());
