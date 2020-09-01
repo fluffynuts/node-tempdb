@@ -15,9 +15,17 @@ export enum Databases {
 
 type Action = ((...args: any[]) => void);
 
+export interface TempDbOptions {
+    type?: Databases,
+    inactivityTimeoutSeconds?: number;
+    absoluteLifespanSeconds?: number;
+}
+
 export class TempDb {
-    public static async create(type?: Databases): Promise<TempDb> {
-        const result = new TempDb(type);
+    private _lastError: any;
+
+    public static async create(options?: TempDbOptions): Promise<TempDb> {
+        const result = new TempDb(options);
         await result.start();
         return result;
     }
@@ -27,9 +35,13 @@ export class TempDb {
     }
 
     private readonly _type: Databases;
+    private _inactivityTimeoutSeconds?: number;
+    private _absoluteLifespanSeconds?: number;
 
-    constructor(type?: Databases) {
-        this._type = type ?? Databases.mysql;
+    constructor(options?: TempDbOptions) {
+        this._type = options?.type ?? Databases.mysql;
+        this._inactivityTimeoutSeconds = options?.inactivityTimeoutSeconds;
+        this._absoluteLifespanSeconds = options?.absoluteLifespanSeconds;
     }
 
     public get config(): DbConfig | undefined {
@@ -57,6 +69,19 @@ export class TempDb {
     private _connectionInfo: ConnectionInfo | undefined;
     private _process: ChildProcessWithoutNullStreams | undefined;
 
+    private _generateTempDbRunnerArgs(): string[] {
+        const result = ["ie", this._type];
+        if (this._absoluteLifespanSeconds !== undefined) {
+            result.push("-a");
+            result.push(this._absoluteLifespanSeconds.toString());
+        }
+        if (this._inactivityTimeoutSeconds !== undefined) {
+            result.push("-i");
+            result.push(this._inactivityTimeoutSeconds.toString());
+        }
+        return result;
+    }
+
     /**
      * Starts the instance, returning the connection string once started
      */
@@ -66,8 +91,10 @@ export class TempDb {
                 "Already started! Stop me first! If you want connection info, observe the connectionInfo property"
             );
         }
-        const runner = await this.findRunner();
-        const process = this._process = spawn(runner, ["-e", this._type]);
+        const
+            runner = await this.findRunner(),
+            args = this._generateTempDbRunnerArgs(),
+            process = this._process = spawn(runner, args);
         return new Promise<ConnectionInfo>((resolve, reject) => {
             let resolved = false;
             const stderr: string[] = [];
@@ -90,8 +117,13 @@ export class TempDb {
                 if (code && !resolved) {
                     reject(`Unable to start up ${ runner }:\n${ stderr.join("\n") }`);
                 }
-                if (code && this._stopReject) {
-                    this._stopReject(code);
+                if (code) {
+                    const error = new Error(`TempDbRunner process stops with code: ${ code }`) as any;
+                    error.exitCode = code;
+                    this._lastError = error;
+                    if (this._stopReject) {
+                        this._stopReject(error);
+                    }
                 } else if (this._stopResolve) {
                     this._stopResolve();
                 }
@@ -112,7 +144,9 @@ export class TempDb {
     public async stop(): Promise<void> {
         return new Promise((resolve, reject) => {
             if (this._process === undefined) {
-                return reject(`Not running`);
+                return this._lastError
+                    ? reject(this._lastError)
+                    : reject(new Error(`Not running`));
             }
             if (this._stopResolve) {
                 return reject(`Busy trying to stop...`);

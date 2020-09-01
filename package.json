@@ -5,7 +5,7 @@
   "main": "dist/tempdb.js",
   "files": [
     "dist/**/*",
-    "PeanutButter.TempDb.Runner.1.2.372/**/*"
+    "PeanutButter.TempDb.Runner.1.2.377/**/*"
   ],
   "scripts": {
     "pretest": "run-s \"zarro download-tempdb-if-necessary\"",

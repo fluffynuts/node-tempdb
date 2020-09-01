@@ -21,7 +21,8 @@ gulp.task("download-tempdb-if-necessary", async () => {
       const client = new NugetClient();
       return await client.downloadPackage({
         packageId: packageName,
-        version
+        version,
+        output: "."
       })
     });
   console.log(chalk.yellow(`  -> ${result.fullName} downloaded!`));

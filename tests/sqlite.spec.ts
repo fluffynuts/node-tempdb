@@ -50,13 +50,13 @@ describe(`node-tempdb: sqlite support`, () => {
     const instances: TempDb[] = [];
 
     function create(type?: Databases) {
-        const result = new TempDb(type);
+        const result = new TempDb({ type });
         instances.push(result);
         return result;
     }
 
     async function staticCreate(type?: Databases) {
-        const result = await TempDb.create(type);
+        const result = await TempDb.create({ type });
         instances.push(result);
         return result;
     }
