@@ -1,8 +1,9 @@
 import "expect-even-more-jest";
-import { Databases, TempDb, TempDbOptions } from "../src/tempdb";
+import { Databases, ProcessExitError, TempDb, TempDbOptions } from "../src/tempdb";
 import Knex from "knex";
 import { KnexConfig } from "../src/connection-info";
 import { sleep } from "expect-even-more-jest";
+const { spyOn } = jest;
 
 describe(`node-tempdb: mysql support`, () => {
     it(`should provide a temp mysql database when available`, async () => {
@@ -16,7 +17,7 @@ describe(`node-tempdb: mysql support`, () => {
             .from("INFORMATION_SCHEMA.TABLES");
         expect(result)
             .not.toBeEmptyArray();
-    });
+    }, 60000);
 
     it(`should time out when no activity and configured to time out`, async () => {
         // Arrange
@@ -35,7 +36,7 @@ describe(`node-tempdb: mysql support`, () => {
             .from("INFORMATION_SCHEMA.TABLES")
         ).rejects.toThrow();
         // Assert
-    });
+    }, 60000);
 
     it(`should time out on absolute timeout when configured to time out`, async () => {
         // Arrange
@@ -55,11 +56,7 @@ describe(`node-tempdb: mysql support`, () => {
             .from("INFORMATION_SCHEMA.TABLES")
         ).rejects.toThrow();
         // Assert
-    });
-
-    beforeEach(() => {
-        jest.setTimeout(60000);
-    });
+    }, 60000);
 
     const instances: TempDb[] = [];
 
@@ -82,14 +79,31 @@ describe(`node-tempdb: mysql support`, () => {
 
     afterEach(async () => {
         const toStop = instances.splice(0, instances.length);
+        const log = console.log.bind(console);
+        spyOn(console, "log").mockImplementation((...args: any[]) => {
+            if (`${args[0]}`.includes("Connection Error")) {
+                return;
+            }
+            log(args);
+        })
         for (let instance of toStop) {
             try {
                 await instance.stop();
             } catch (e) {
-                if (e.exitCode === 1) {
-                    continue;
+                if (e instanceof ProcessExitError) {
+                    if (e.exitCode === 1) {
+                        // happens when the connection is interrupted, which is
+                        // expected for the end of some of these tests (not under
+                        // normal operations though)
+                        continue;
+                    }
+                    console.error(`TempDb Runner process exits with unexpected code: ${ e.exitCode }`, e);
+                } else {
+                    const message = e instanceof Error
+                        ? e.message
+                        : `${ e }`;
+                    console.error(`TempDb Runner abnormal exit: ${ message }`)
                 }
-                console.error(`TempDb Runner process exits with unexpected code: ${e.exitCode}`, e);
             }
         }
         const conns = connections.splice(0, connections.length);

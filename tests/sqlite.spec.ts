@@ -16,7 +16,7 @@ describe(`node-tempdb: sqlite support`, () => {
             .where("type", "=", "table");
         expect(result)
             .toBeEmptyArray();
-    });
+    }, 30000);
 
     it(`should stop`, async () => {
         // Arrange
@@ -28,7 +28,7 @@ describe(`node-tempdb: sqlite support`, () => {
         const connection = connectionInfo.config as SqliteConnectionConfig;
         expect(connection.filename)
             .not.toBeFile();
-    });
+    }, 30000);
 
     it(`should have a static create method which starts up the database`, async () => {
         // Arrange
@@ -45,7 +45,7 @@ describe(`node-tempdb: sqlite support`, () => {
             .where("type", "=", "table");
         expect(result)
             .toBeEmptyArray();
-    });
+    }, 30000);
 
     const instances: TempDb[] = [];
 
@@ -67,11 +67,6 @@ describe(`node-tempdb: sqlite support`, () => {
         connections.push(result);
         return result;
     }
-
-    beforeEach(() => {
-        jest.setTimeout(30000);
-    });
-
 
     afterEach(async () => {
         const toStop = instances.splice(0, instances.length);

@@ -7,10 +7,19 @@ import { ConnectionInfo, DbConfig, KnexConfig } from "./connection-info";
 const myPackage = "node-tempdb";
 const pbPackage = "PeanutButter.TempDb.Runner";
 
+// noinspection JSUnusedGlobalSymbols
 export enum Databases {
     mysql = "mysql",
     sqlite = "sqlite",
     localdb = "localdb"
+}
+
+export class ProcessExitError extends Error {
+    exitCode: number;
+    constructor(message: string, exitCode: number) {
+        super(message);
+        this.exitCode = exitCode;
+    }
 }
 
 type Action = ((...args: any[]) => void);
@@ -22,7 +31,7 @@ export interface TempDbOptions {
 }
 
 export class TempDb {
-    private _lastError: any;
+    private _lastError?: Error;
 
     public static async create(options?: TempDbOptions): Promise<TempDb> {
         const result = new TempDb(options);
@@ -54,12 +63,6 @@ export class TempDb {
         return this._connectionInfo
             ? this._connectionInfo.clone().knexConfig
             : undefined;
-    }
-
-    private get connectionInfo(): ConnectionInfo | undefined {
-        return !this._connectionInfo
-            ? undefined
-            : this._connectionInfo.clone();
     }
 
     public get isRunning(): boolean {
@@ -118,8 +121,7 @@ export class TempDb {
                     reject(`Unable to start up ${ runner }:\n${ stderr.join("\n") }`);
                 }
                 if (code) {
-                    const error = new Error(`TempDbRunner process stops with code: ${ code }`) as any;
-                    error.exitCode = code;
+                    const error = new ProcessExitError(`TempDbRunner process stops with code: ${ code }`, code);
                     this._lastError = error;
                     if (this._stopReject) {
                         this._stopReject(error);
@@ -149,11 +151,21 @@ export class TempDb {
                     : reject(new Error(`Not running`));
             }
             if (this._stopResolve) {
-                return reject(`Busy trying to stop...`);
+                return reject(new Error(`Busy trying to stop...`));
             }
             this._stopResolve = resolve;
             this._stopReject = reject;
             this._process.stdin.write("stop\n");
+            for (const pipe of [ this._process.stdin, this._process.stdout, this._process.stderr ]) {
+                // ensure node pipes are dead
+                if (pipe) {
+                    try {
+                        pipe.destroy()
+                    } catch {
+                        // suppress
+                    }
+                }
+            }
         });
     }
 
