@@ -1,5 +1,5 @@
 const
-  rimraf = requireModule("rimraf"),
+  { rm, ls } = require("yafs"),
   writeTextFile = requireModule("write-text-file"),
   { run } = require("./modules/run"),
   { NugetClient } = require("node-nuget-client"),
@@ -16,7 +16,15 @@ gulp.task("upgrade-tempdb-runner", async () => {
 
   await run(
     `remove any existing ${tempDbPackageName}`,
-    () => rimraf(path.join(output, `${tempDbPackageName}*`))
+    async () => {
+      const contents = await ls(output, {
+        recurse: false
+      });
+      const toRemove = contents.find(p => path.basename(p).startsWith(tempDbPackageName));
+      if (toRemove) {
+        await rm(toRemove);
+      }
+    }
   );
 
   const dlResult = await run(

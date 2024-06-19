@@ -1,6 +1,6 @@
 const
   chalk = require("chalk"),
-  rimraf = requireModule("rimraf"),
+  { rm } = require("yafs"),
   { isFolder } = requireModule("fs"),
   { run } = require("./modules/run"),
   gulp = requireModule("gulp-with-help"),
@@ -15,7 +15,7 @@ gulp.task("download-tempdb-if-necessary", async () => {
     console.log(`${packageName} already downloaded to ${expectedPath}`);
     return;
   }
-  await rimraf(`${packageName}*`);
+  await rm(expectedPath);
   const result = await run(`Download latest ${packageName}`,
     async () => {
       const client = new NugetClient();

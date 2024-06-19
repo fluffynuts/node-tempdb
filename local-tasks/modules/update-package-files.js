@@ -1,6 +1,5 @@
 const
-  readTextFile = requireModule("read-text-file"),
-  writeTextFile = requireModule("write-text-file"),
+  { readTextFile, writeTextFile } = require("yafs"),
   fs = requireModule("fs"),
   { config } = require("./config"),
   tempDbPackageName = config.tempDb.packageName;
