@@ -1,11 +1,11 @@
 {
   "name": "node-tempdb",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Piggy-backs off of PeanutButter.TempDb.Runner to provide a way for node tests to run against a temporary database",
   "main": "dist/tempdb.js",
   "files": [
     "dist/**/*",
-    "PeanutButter.TempDb.Runner.1.2.377/**/*"
+    "PeanutButter.TempDb.Runner.3.0.305/**/*"
   ],
   "scripts": {
     "pretest": "run-p clear-test-cache download-tempdb-if-necessary",
