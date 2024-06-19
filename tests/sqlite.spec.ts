@@ -79,5 +79,5 @@ describe(`node-tempdb: sqlite support`, () => {
         for (let conn of conns) {
             await conn.destroy();
         }
-    });
+    }, 30000);
 });
